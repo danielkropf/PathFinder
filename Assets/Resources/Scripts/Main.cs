@@ -7,7 +7,7 @@ public class Main : MonoBehaviour {
 	public static int phase;
 	public static GameObject pointA;
 	public static GameObject pointB;
-	public static List<GameObject> TheWay = new List<GameObject>();
+	public static List<List<GameObject>> TheWay = new List<List<GameObject>>();
 
 	void Start()
 	{
