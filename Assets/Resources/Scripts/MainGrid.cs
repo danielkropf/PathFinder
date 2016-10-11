@@ -56,7 +56,7 @@ public class MainGrid : MonoBehaviour {
 					{
 						this.gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Wall");
 						function = "Wall";
-						valueTotal = 10000;
+						valueTotal = 10000000;
 					}
 					else if (this.gameObject.GetComponent<MainGrid>().function == "Wall")
 					{
@@ -72,7 +72,6 @@ public class MainGrid : MonoBehaviour {
 					}
 				}
 				break;
-
 		}
 	}
 
