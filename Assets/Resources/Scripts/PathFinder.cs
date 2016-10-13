@@ -6,9 +6,12 @@ public class PathFinder : MonoBehaviour {
 
 	public GameObject go2;
 	private List<GameObject> sides = new List<GameObject>();
+	string k;
+	bool pow;
 
 	void Start()
 	{
+		pow = false;
 		//go = Main.pointA;
 	}
 	void Update () {
@@ -18,30 +21,36 @@ public class PathFinder : MonoBehaviour {
 			//go = Main.pointA;
 			PathFind(Main.pointA);
 		}
+		if (pow) EndPathFinding();
 	}
 
 	private void PathFind(GameObject go) 
 	{
+		pow = false;
 		if (go != Main.pointB)
 		{
-			Debug.Log("mauricio batatao");
+			sides.Clear();
 
 			#region Geting Side Places
 
 			#region Right
 			if (go.GetComponent<MainGrid>().Right != null)
 			{
-				if (go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().function != "Wall") sides.Add(go.GetComponent<MainGrid>().Right);
+				if (go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().function != "Wall" &&
+                    !go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().passed) 
+					sides.Add(go.GetComponent<MainGrid>().Right);
 
 				#region Right.Up
 				if (go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Up != null && 
-					go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().function != "Wall")
+					go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().function != "Wall" &&
+                    !go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().passed)
 					sides.Add(go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Up);
 				#endregion
 
 				#region Right.Down
 				if (go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Down != null && 
-					go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().function != "Wall")
+					go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().function != "Wall" &&
+					!go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().passed)
 					sides.Add(go.GetComponent<MainGrid>().Right.GetComponent<MainGrid>().Down);
 				#endregion
 			}
@@ -50,17 +59,20 @@ public class PathFinder : MonoBehaviour {
 			#region Left
 			if (go.GetComponent<MainGrid>().Left != null)
 			{
-				if(go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().function != "Wall") sides.Add(go.GetComponent<MainGrid>().Left);
+				if(go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().function != "Wall" &&
+					!go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().passed) sides.Add(go.GetComponent<MainGrid>().Left);
 
 				#region Left.Up
 				if (go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Up != null &&
-					go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().function != "Wall")
+					go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().function != "Wall" &&
+					!go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().passed)
 					sides.Add(go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Up);
 				#endregion
 
 				#region Left.Down
 				if (go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Down != null && 
-					go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().function != "Wall")
+					go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().function != "Wall" &&
+					!go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().passed)
 					sides.Add(go.GetComponent<MainGrid>().Left.GetComponent<MainGrid>().Down);
 				#endregion
 			}
@@ -68,13 +80,15 @@ public class PathFinder : MonoBehaviour {
 
 			#region Up
 			if (go.GetComponent<MainGrid>().Up != null &&
-				go.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().function != "Wall")
+				go.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().function != "Wall" &&
+				!go.GetComponent<MainGrid>().Up.GetComponent<MainGrid>().passed)
 				sides.Add(go.GetComponent<MainGrid>().Up);
 			#endregion
 
 			#region Down
 			if (go.GetComponent<MainGrid>().Down != null && 
-				go.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().function != "Wall")
+				go.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().function != "Wall" &&
+				!go.GetComponent<MainGrid>().Down.GetComponent<MainGrid>().passed)
 				sides.Add(go.GetComponent<MainGrid>().Down);
 			#endregion
 
@@ -92,7 +106,10 @@ public class PathFinder : MonoBehaviour {
 				if (difLargura < 0) difLargura *= -10;
 				else difLargura *= 10;
 
-				if (sides[i] == go.GetComponent<MainGrid>().Left || sides[i] == go.GetComponent<MainGrid>().Up || sides[i] == go.GetComponent<MainGrid>().Right || sides[i] == go.GetComponent<MainGrid>().Down)
+				if (sides[i] == go.GetComponent<MainGrid>().Left ||
+				    sides[i] == go.GetComponent<MainGrid>().Up ||
+				    sides[i] == go.GetComponent<MainGrid>().Right ||
+				    sides[i] == go.GetComponent<MainGrid>().Down)
 				{
 					sides[i].GetComponent<MainGrid>().valueTotal = difAltura + difLargura + 10;
 				}
@@ -100,6 +117,7 @@ public class PathFinder : MonoBehaviour {
 				{
 					sides[i].GetComponent<MainGrid>().valueTotal = difAltura + difLargura + 14;
 				}
+				Debug.LogWarning(sides[i]);
 			}
 
 			#endregion
@@ -140,11 +158,11 @@ public class PathFinder : MonoBehaviour {
 			}
 
 			#endregion
-
 		}
 		else
 		{
-			EndPathFinding();
+			pow = true;
+			//EndPathFinding();
 		}
 	}
 
