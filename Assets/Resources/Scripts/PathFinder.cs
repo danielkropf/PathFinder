@@ -17,8 +17,7 @@ public class PathFinder : MonoBehaviour {
 	void Update () {
 		if (Main.phase == 4)
 		{
-			Main.phase = 5;
-			//go = Main.pointA;
+            Main.phase = 5;
 			PathFind(Main.pointA);
 		}
 		if (pow) EndPathFinding();
@@ -117,7 +116,6 @@ public class PathFinder : MonoBehaviour {
 				{
 					sides[i].GetComponent<MainGrid>().valueTotal = difAltura + difLargura + 14;
 				}
-				Debug.LogWarning(sides[i]);
 			}
 
 			#endregion
@@ -144,17 +142,20 @@ public class PathFinder : MonoBehaviour {
 
             #region Forwarding
 
-            go.GetComponent<MainGrid>().passed = true;
+            if (go == Main.pointA) go.GetComponent<MainGrid>().way = 0;
 			if (go != Main.pointB)
 			{
-				foreach (GameObject goT in gos)
-				{
-					if(!goT.GetComponent<MainGrid>().passed)
-					{
-						if(goT != Main.pointB)goT.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Player");
-						PathFind(goT);
-					}
-				}
+                for (int i = 0; i < gos.Count; i++)
+                {
+                    if (gos[i].GetComponent<MainGrid>().way != go.GetComponent<MainGrid>().way)
+                    {
+                        if (gos[i] != Main.pointB) gos[i].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Player");
+                        if (go.GetComponent<MainGrid>().way == 0) gos[i].GetComponent<MainGrid>().way = i;
+                        else gos[i].GetComponent<MainGrid>().way = go.GetComponent<MainGrid>().way;
+						Debug.Log(gos[i].GetComponent<MainGrid>().way + " : " + gos[i] + " : " + gos[i].transform.parent);
+                        PathFind(gos[i]);
+                    }
+                }
 			}
 
 			#endregion
@@ -162,7 +163,6 @@ public class PathFinder : MonoBehaviour {
 		else
 		{
 			pow = true;
-			//EndPathFinding();
 		}
 	}
 
@@ -174,7 +174,6 @@ public class PathFinder : MonoBehaviour {
 			ints.Add(0);
 		}
 
-
 		for (int i = 0; i < Main.TheWay.Count; i++)
 		{
 			for (int j = 0; j < Main.TheWay[i].Count; j++)
@@ -182,5 +181,6 @@ public class PathFinder : MonoBehaviour {
 				ints[i] += Main.TheWay[i][j].GetComponent<MainGrid>().valueTotal;
 			}
 		}
+		Debug.LogError("batata");
 	}
 }

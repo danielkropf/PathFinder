@@ -8,6 +8,7 @@ public class MainGrid : MonoBehaviour {
     public GameObject Left;
     public GameObject Up;
     public GameObject Down;
+    public int way = -1;
 
 	public int altura;
 	public int largura;
