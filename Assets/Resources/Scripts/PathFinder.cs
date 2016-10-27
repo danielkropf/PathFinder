@@ -5,9 +5,10 @@ using System.Collections.Generic;
 public class PathFinder : MonoBehaviour {
 
 	public GameObject go2;
-	private List<GameObject> sides = new List<GameObject>();
+	public List<GameObject> sides = new List<GameObject>();
 	string k;
 	bool pow;
+	int s = 0;
 
 	void Start()
 	{
@@ -25,6 +26,7 @@ public class PathFinder : MonoBehaviour {
 
 	private void PathFind(GameObject go) 
 	{
+		go2 = go;
 		pow = false;
 		if (go != Main.pointB)
 		{
@@ -116,6 +118,9 @@ public class PathFinder : MonoBehaviour {
 				{
 					sides[i].GetComponent<MainGrid>().valueTotal = difAltura + difLargura + 14;
 				}
+
+				if (sides[i].GetComponent<SpriteRenderer>().sprite.name == "Water") sides[i].GetComponent<MainGrid>().valueTotal += 10;
+				if (sides[i].GetComponent<SpriteRenderer>().sprite.name == "Player") sides[i].GetComponent<MainGrid>().valueTotal += 10000;
 			}
 
 			#endregion
@@ -142,17 +147,21 @@ public class PathFinder : MonoBehaviour {
 
             #region Forwarding
 
-            if (go == Main.pointA) go.GetComponent<MainGrid>().way = 0;
+			if (go == Main.pointA) go.GetComponent<MainGrid>().way = 0;
 			if (go != Main.pointB)
 			{
                 for (int i = 0; i < gos.Count; i++)
                 {
                     if (gos[i].GetComponent<MainGrid>().way != go.GetComponent<MainGrid>().way)
                     {
-                        if (gos[i] != Main.pointB) gos[i].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Player");
+                        if (gos[i] != Main.pointB) 
+						{
+							gos[i].GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Player");
+						}
                         if (go.GetComponent<MainGrid>().way == 0) gos[i].GetComponent<MainGrid>().way = i;
                         else gos[i].GetComponent<MainGrid>().way = go.GetComponent<MainGrid>().way;
-						Debug.Log(gos[i].GetComponent<MainGrid>().way + " : " + gos[i] + " : " + gos[i].transform.parent);
+
+
                         PathFind(gos[i]);
                     }
                 }
@@ -168,6 +177,7 @@ public class PathFinder : MonoBehaviour {
 
 	private void EndPathFinding()
 	{
+		Debug.Log("oi");
 		List<int> ints = new List<int>();
 		for (int i = 0; i < Main.TheWay.Count; i++)
 		{
@@ -181,6 +191,6 @@ public class PathFinder : MonoBehaviour {
 				ints[i] += Main.TheWay[i][j].GetComponent<MainGrid>().valueTotal;
 			}
 		}
-		Debug.LogError("batata");
+		pow = false;
 	}
 }
